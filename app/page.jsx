@@ -40,10 +40,10 @@ export default function Header() {
     const fetchData = async () => {
       try {
         const [bestSelling, allProducts, newlyAdded, wishlist] = await Promise.all([
-          axios.get("/api/product/getBestSelling"),
-          axios.get("/api/product/getAllProducts"),
-          axios.get("/api/product/getNewlyAddedProducts"),
-          axios.get("/api/user/wishlist/getAllItems"),
+          axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/getBestSelling`),
+          axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/getAllProducts`),
+          axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/getNewlyAddedProducts`),
+          axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/wishlist/getAllItems`),
         ]);
 
         setBestSellingProducts(bestSelling.data.products);

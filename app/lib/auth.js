@@ -40,7 +40,7 @@ export const authOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
-  secret: process.env.JWT_SECRET || "secret",
+  secret: process.env.NEXTAUTH_SECRET || "secret",
   pages: {
     signIn: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`,
     signOut: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`,

@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../../db/src/index";
 
-export async function GET(req, { params }) {
+export async function GET(req, context) {
     try {
+        const params = await context.params;
         const { id } = params;
 
         const reviews = await prisma.Review.findMany({
