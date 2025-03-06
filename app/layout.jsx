@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import Navbar from "../components/Navbar";
 import "./globals.css";
 import Footer from "../components/Footer";
+import { Suspense } from "react";
 import { SessionProvider } from "next-auth/react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,6 +21,7 @@ const geistMono = localFont({
 export default function RootLayout({children}) {
   return (
     <SessionProvider>
+      <Suspense fallback={<div>Loading...</div>}>
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable}`}>
           <Navbar />
@@ -28,6 +30,7 @@ export default function RootLayout({children}) {
           <Footer />
         </body>
       </html>
+      </Suspense>
     </SessionProvider>
   );
 }

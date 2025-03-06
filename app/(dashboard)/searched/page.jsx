@@ -4,13 +4,13 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ProductCard from "../../../components/ProductCard.jsx";
-import { Suspense } from "react";
 
 const SearchedPage = () => {
   const searchParams = useSearchParams();
   const query = searchParams.get("query") || "";
   const [products, setProducts] = useState([]);
   const [wishlist, setWishlist] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -43,31 +43,35 @@ const SearchedPage = () => {
     };
 
     if (query) {
-      fetchProducts();
-      fetchWishlist();
+      setLoading(true);
+      Promise.all([fetchProducts(), fetchWishlist()]).finally(() =>
+        setLoading(false)
+      );
     }
   }, [query]);
 
+  if (loading) {
+    return <div className="p-6 text-center">Loading search results...</div>;
+  }
+
   return (
-    <Suspense fallback={<div>Loading search results...</div>}>
-      <div className="p-6">
-        <h1 className="text-2xl font-bold">Search Results for "{query}"</h1>
-        {products.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                wishlist={wishlist}
-                setWishlist={setWishlist}
-              />
-            ))}
-          </div>
-        ) : (
-          <p className="text-gray-500 mt-4">No products found.</p>
-        )}
-      </div>
-    </Suspense>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold">Search Results for "{query}"</h1>
+      {products.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4">
+          {products.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              wishlist={wishlist}
+              setWishlist={setWishlist}
+            />
+          ))}
+        </div>
+      ) : (
+        <p className="text-gray-500 mt-4">No products found.</p>
+      )}
+    </div>
   );
 };
 
