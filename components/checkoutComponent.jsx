@@ -50,7 +50,7 @@ const CheckoutComponent = ({ products }) => {
         amount: total,
       };
 
-      const response = await axios.post("/api/user/addOrder", orderDetails, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/addOrder`, orderDetails, {
         headers: {
           "Content-Type": "application/json",
         },

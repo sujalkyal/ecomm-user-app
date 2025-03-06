@@ -15,7 +15,7 @@ const CartPage = () => {
 
   const fetchCart = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/user/getCartDetails");
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/getCartDetails`);
       setCart(response.data.result);
       setSubtotal(response.data.totalAmount);
     } catch (error) {
@@ -35,7 +35,7 @@ const CartPage = () => {
 
   const handleRemove = async (productId) => {
     try {
-      await axios.delete(`/api/user/deleteitemcart/${productId}`);
+      await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/deleteitemcart/${productId}`);
       handleCartUpdate();
     } catch (error) {
       console.error("Error removing item:", error);
@@ -47,7 +47,7 @@ const CartPage = () => {
     const filteredCart = cart.map(({ productId, quantity }) => ({ productId, quantity }));
 
     try {
-        const response = await axios.post("http://localhost:3000/api/user/checkStock", {filteredCart});
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/checkStock`, {filteredCart});
 
         if (response.data.success) {
             localStorage.setItem("checkoutProducts", JSON.stringify(cart));

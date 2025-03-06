@@ -1,6 +1,0 @@
-[?9001h[?1004h[?25l[2J[m[H]0;npm[?25h]0;npm run build[?25l
-> @repo/db@1.0.0 build
-> prisma generate[5;1H[?25h[K]0;C:\WINDOWS\system32\cmd.exe [2mEnvironment variables loaded from .env
-[22m[2mPrisma schema loaded from prisma\schema.prisma
-[?25l[22m
-✔ Generated [1mPrisma Client[22m (v6.4.1)[2m to .\..\..\node_modules\@prisma\client[22m in 212ms[10;1HStart by importing your Prisma Client (See: https://pris.ly/d/importing-client)[12;1HTip: Curious about the SQL queries Prisma ORM generates? Optimize helps you enhance your visibility: https://pris.ly/tip-2-optimize[14;1H[?25h[K[?9001l[?1004l

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import prisma from "@repo/db/client";
+import prisma from "../../../../../db/src/index";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../../lib/auth";
 
@@ -11,7 +11,7 @@ export async function POST(req) {
         }
 
         const id = session.user.id;
-        const { productId } = await req.json(); // ✅ Correctly parse JSON
+        const { productId } = await req.json();
 
         const user = await prisma.user.findUnique({
             where: { id },
@@ -25,7 +25,7 @@ export async function POST(req) {
         const updatedWishlist = await prisma.user.update({
             where: { id },
             data: {
-                wishlist: user.wishlist.filter((item) => item !== productId) // ✅ Remove the item
+                wishlist: user.wishlist.filter((item) => item !== productId)
             }
         });
 

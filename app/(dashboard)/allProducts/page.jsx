@@ -10,7 +10,7 @@ export default function AllProductsPage() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/product/getAllProducts")
+      .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/getAllProducts`)
       .then((response) => {
         setProducts(response.data);
       })
@@ -19,7 +19,7 @@ export default function AllProductsPage() {
       });
 
     axios
-      .get("/api/user/wishlist/getAllItems")
+      .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/wishlist/getAllItems`)
       .then(({ data }) => setWishlist(data.map(item => item.id) || []))
       .catch((error) => console.error("Error fetching wishlist:", error));
   }, []);

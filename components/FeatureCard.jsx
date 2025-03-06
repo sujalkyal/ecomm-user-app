@@ -2,7 +2,7 @@
 export default function FeatureCard() {
     const features = [
       {
-        icon: "🚚", // You can replace this with an actual image or SVG
+        icon: "🚚",
         title: "FREE AND FAST DELIVERY",
         description: "Free delivery for all orders over $140",
       },

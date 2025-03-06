@@ -23,7 +23,7 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/user");
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`);
         setFetchedUser(response.data);
         setUserDetails((prev) => ({ ...prev, ...response.data }));
       } catch (error) {
@@ -48,14 +48,14 @@ export default function ProfilePage() {
     }
 
     try {
-      const authResponse = await axios.post("/api/user/checkPassword", { currentPassword });
+      const authResponse = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/checkPassword`, { currentPassword });
       if (!authResponse.data.valid) {
         toast.error("Incorrect password entered");
         return;
       }
 
       const updatedDetails = newPassword ? { ...otherDetails, newPassword } : otherDetails;
-      const response = await axios.post("/api/user/updateDetails", updatedDetails);
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/updateDetails`, updatedDetails);
 
       if (response.data.success) {
         toast.success("Changes Saved");

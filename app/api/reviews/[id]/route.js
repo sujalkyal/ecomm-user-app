@@ -1,22 +1,21 @@
 import { NextResponse } from "next/server";
-import prisma from "@repo/db/client";
+import prisma from "../../../../db/src/index";
 
 export async function GET(req, { params }) {
     try {
-        const { id } = params; // ✅ Correctly extract the product ID
+        const { id } = params;
 
-        // ✅ Fetch all reviews for the given product ID, including user ID
         const reviews = await prisma.Review.findMany({
             where: { productId: id },
             include: {
                 user: {
                     select: {
-                        id: true, // ✅ Fetch user ID instead of first name
+                        id: true,
                     },
                 },
             },
             orderBy: {
-                createdAt: "desc", // ✅ Show latest reviews first
+                createdAt: "desc",
             },
         });
 

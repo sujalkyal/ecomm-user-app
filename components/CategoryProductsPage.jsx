@@ -7,23 +7,23 @@ import ProductCard from "./ProductCard";
 export default function CategoryProductsPage({ category }) {
   const [products, setProducts] = useState([]);
   const [wishlist, setWishlist] = useState([]);
-  const [loading, setLoading] = useState(true); // 🔹 Loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
-      setLoading(true); // 🔹 Start loading
+      setLoading(true);
       try {
-        const response = await axios.get(`/api/product/collection?category=${category}`);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/collection?category=${category}`);
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
-      setLoading(false); // 🔹 Stop loading
+      setLoading(false);
     };
 
     const fetchWishlist = async () => {
       try {
-        const { data } = await axios.get("/api/user/wishlist/getAllItems");
+        const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/wishlist/getAllItems`);
         setWishlist(data.map((item) => item.id) || []);
       } catch (error) {
         console.error("Error fetching wishlist:", error);

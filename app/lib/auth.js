@@ -1,4 +1,4 @@
-import db from "@repo/db/client";
+import db from "../../db/src/index";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import GoogleProvider from "next-auth/providers/google";
@@ -42,9 +42,9 @@ export const authOptions = {
   ],
   secret: process.env.JWT_SECRET || "secret",
   pages: {
-    signIn: "http://localhost:3000/auth/login",  // Custom login page
-    signOut: "http://localhost:3000/auth/login",
-    newUser: "http://localhost:3000/auth/signup", // Redirect here after user signs up (optional)
+    signIn: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`,
+    signOut: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`,
+    newUser: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signup`,
   },
   callbacks: {
     async session({ token, session }) {

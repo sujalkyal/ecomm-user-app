@@ -1,6 +1,6 @@
 // returns particular product details
 import { NextResponse } from "next/server";
-import prisma from "@repo/db/client";
+import prisma from "../../../../db/src/index";
 
 export async function GET(req, { params }) {
     try{

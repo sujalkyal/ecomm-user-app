@@ -8,15 +8,15 @@ const CartItem = ({ product, quantity, onRemove, onQuantityChange }) => {
   const handleUpdateQuantity = async (increase) => {
     try {
       const updatedQuantity = increase ? itemQuantity + 1 : itemQuantity - 1;
-      if (updatedQuantity < 1) return; // Prevent quantity from going below 1
+      if (updatedQuantity < 1) return;
 
-      await axios.post("/api/user/addToCart", {
+      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/addToCart`, {
         productId: product.id,
-        choice: increase, // true for add, false for subtract
+        choice: increase,
       });
 
       setItemQuantity(updatedQuantity);
-      onQuantityChange(); // ✅ Trigger re-fetch of cart details after update
+      onQuantityChange();
     } catch (error) {
       console.error("Error updating quantity:", error);
     }
@@ -24,8 +24,8 @@ const CartItem = ({ product, quantity, onRemove, onQuantityChange }) => {
 
   const handleRemove = async () => {
     try {
-      await axios.delete("/api/user/deleteitemcart", { data: { productId: product.id } }); // ✅ Corrected DELETE request
-      onQuantityChange(); // ✅ Refresh cart after item removal
+      await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/deleteitemcart`, { data: { productId: product.id } }); // ✅ Corrected DELETE request
+      onQuantityChange();
     } catch (error) {
       console.error("Error removing item:", error);
     }

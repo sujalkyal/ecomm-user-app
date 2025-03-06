@@ -14,7 +14,7 @@ const SearchedPage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("/api/product/getAllProducts");
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/getAllProducts`);
         if (response.status === 200) {
           const filteredProducts = response.data.filter((product) =>
             product.name.toLowerCase().includes(query.toLowerCase())
@@ -28,7 +28,7 @@ const SearchedPage = () => {
 
     const fetchWishlist = async () => {
       try {
-        const response = await axios.get("/api/user/wishlist/getAllItems");
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/wishlist/getAllItems`);
         if (response.status === 200 && Array.isArray(response.data)) {
           setWishlist(response.data.map((item) => item.id));
         }

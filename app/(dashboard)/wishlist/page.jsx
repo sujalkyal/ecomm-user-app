@@ -10,7 +10,7 @@ const Wishlist = () => {
 
   const handleRemoveFromWishlist = async (productId) => {
     try {
-      await axios.post("http://localhost:3000/api/user/wishlist/removeItem", { productId });
+      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/wishlist/removeItem`, { productId });
       setWishlist((prev) => prev.filter((item) => item.id !== productId));
     } catch (error) {
       console.error("Error removing from wishlist:", error);
@@ -20,7 +20,7 @@ const Wishlist = () => {
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/user/wishlist/getAllItems");
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/wishlist/getAllItems`);
         setWishlist(response.data);
       } catch (error) {
         console.error("Error fetching wishlist:", error);
@@ -36,8 +36,8 @@ const Wishlist = () => {
 
     try {
       const productIds = wishlist.map((product) => product.id);
-      await axios.post("http://localhost:3000/api/user/addMultipleToCart", { productIds });
-      await axios.delete("http://localhost:3000/api/user/wishlist/clearAll");
+      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/addMultipleToCart`, { productIds });
+      await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/wishlist/clearAll`);
       setWishlist([]);
     } catch (error) {
       console.error("Error moving wishlist items to cart:", error);

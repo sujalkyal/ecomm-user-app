@@ -2,13 +2,12 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FaHeart } from "react-icons/fa";
-import { Eye } from "lucide-react";
 import axios from "axios";
 
 export default function ProductCard({ product, wishlist = [], setWishlist, updateCart }) {
   const [hovered, setHovered] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [inCart, setInCart] = useState(false); // ✅ State to track if the item is in the cart
+  const [inCart, setInCart] = useState(false);
 
   const router = useRouter();
   if (!product) return null;
@@ -24,12 +23,10 @@ export default function ProductCard({ product, wishlist = [], setWishlist, updat
     setIsWishlisted(wishlist.includes(product.id));
   }, [wishlist]);
 
-
-  // ✅ Check if the product is already in the cart when the component mounts
   useEffect(() => {
     const checkCart = async () => {
       try {
-        const response = await axios.get("/api/user/getCartDetails");
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/getCartDetails`);
         const cartItems = response.data.result || [];
         setInCart(cartItems.some((item) => item.product.id === product.id));
       } catch (error) {
@@ -49,10 +46,10 @@ export default function ProductCard({ product, wishlist = [], setWishlist, updat
 
     try {
       if (isWishlisted) {
-        await axios.post("/api/user/wishlist/removeItem", { productId: product.id });
+        await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/wishlist/removeItem`, { productId: product.id });
         setWishlist((prev) => prev.filter((item) => item !== product.id));
       } else {
-        await axios.post("/api/user/wishlist/addItem", { productId: product.id });
+        await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/wishlist/addItem`, { productId: product.id });
         setWishlist((prev) => [...prev, product.id]);
       }
     } catch (error) {
@@ -64,11 +61,11 @@ export default function ProductCard({ product, wishlist = [], setWishlist, updat
   
   const handleAddToCart = async () => {
     try {
-      await axios.post("/api/user/addToCart", { productId: product.id, choice: true });
+      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/addToCart`, { productId: product.id, choice: true });
       if (updateCart) {
         updateCart();
       }
-      setInCart(true); // ✅ Mark product as added to cart
+      setInCart(true);
     } catch (error) {
       console.error("Error adding to cart:", error);
     }
@@ -83,18 +80,6 @@ export default function ProductCard({ product, wishlist = [], setWishlist, updat
         onClick={handleProductClick}
       >
         <img src={productImage} alt={product?.name || "Product"} className="w-full h-64 object-cover" />
-
-        {/* {hovered && (
-          <button
-            className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-2 rounded-md shadow-md hover:cursor-pointer"
-            onClick={(e) => {
-              e.stopPropagation();
-              inCart ? router.push("/cart") : handleAddToCart();
-            }}
-          >
-            {inCart ? "Move to Cart" : "Add to Cart"}
-          </button>
-        )} */}
 
 <div className="absolute top-2 right-2 flex flex-col gap-2 pointer-events-auto">
   <button
@@ -132,7 +117,6 @@ export default function ProductCard({ product, wishlist = [], setWishlist, updat
         {product?.stock > 0 ? `In stock: ${product.stock}` : "Out of stock"}
       </p>
 
-      {/* ✅ Add button outside hover effect for mobile users */}
       <button
         className="mt-4 w-full bg-black text-white px-4 py-2 rounded-md shadow-md hover:cursor-pointer"
         onClick={(e) => {

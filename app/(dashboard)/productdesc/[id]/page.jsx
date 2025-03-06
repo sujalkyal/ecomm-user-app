@@ -17,7 +17,7 @@ export default function ProductPage() {
   const [isHydrated, setIsHydrated] = useState(false);
   const [inCart, setInCart] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [reviews, setReviews] = useState([]); // ✅ Stores all reviews
+  const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState({ rating: 5, comment: "" });
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export default function ProductPage() {
 
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`/api/product/${encodeURIComponent(id)}`);
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/${encodeURIComponent(id)}`);
         setProduct(res.data);
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -38,7 +38,7 @@ export default function ProductPage() {
 
     const fetchReviews = async () => {
       try {
-        const res = await axios.get(`/api/reviews/${id}`); // ✅ Fetch reviews separately
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/reviews/${id}`);
         setReviews(res.data.reviews || []);
       } catch (error) {
         console.error("Error fetching reviews:", error);
@@ -47,7 +47,7 @@ export default function ProductPage() {
 
     const checkCart = async () => {
       try {
-        const response = await axios.get("/api/user/getCartDetails");
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/getCartDetails`);
         const cartItems = response.data.result || [];
         setInCart(cartItems.some((item) => item.product.id === id));
       } catch (error) {
@@ -68,8 +68,8 @@ export default function ProductPage() {
   const toggleWishlist = async () => {
     try {
       const endpoint = isWishlisted
-        ? "/api/user/wishlist/removeItem"
-        : "/api/user/wishlist/addItem";
+        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/wishlist/removeItem`
+        : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/wishlist/addItem`;
       await axios.post(endpoint, { productId: product.id });
       setWishlist((prev) =>
         isWishlisted ? prev.filter((pid) => pid !== product.id) : [...prev, product.id]
@@ -84,7 +84,7 @@ export default function ProductPage() {
     setLoading(true);
 
     try {
-      await axios.post("/api/user/addToCart", { productId: product.id, choice: true });
+      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/addToCart`, { productId: product.id, choice: true });
       setInCart(true);
     } catch (error) {
       console.error("Error adding to cart:", error);
@@ -95,15 +95,15 @@ export default function ProductPage() {
 
   const handleReviewSubmit = async () => {
     try {
-      const response = await axios.post("/api/user/addReview", {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/addReview`, {
         productId: product.id,
         rating: newReview.rating,
         comment: newReview.comment
       });
 
       if (response.status === 201) {
-        setReviews([...reviews, response.data.review]); // ✅ Update reviews dynamically
-        setNewReview({ rating: 5, comment: "" }); // Reset input fields
+        setReviews([...reviews, response.data.review]);
+        setNewReview({ rating: 5, comment: "" });
       }
     } catch (error) {
       console.error("Error submitting review:", error);
@@ -120,8 +120,8 @@ export default function ProductPage() {
           <Swiper
             navigation
             pagination={{ clickable: true }}
-            loop={true} // ✅ Enables infinite looping
-            autoplay={{ delay: 3000, disableOnInteraction: false }} // ✅ Changes slide every 1.5 seconds
+            loop={true}
+            autoplay={{ delay: 3000, disableOnInteraction: false }}
             modules={[Autoplay, Navigation, Pagination]}
             className="w-full rounded-xl shadow-lg"
           >
@@ -177,7 +177,6 @@ export default function ProductPage() {
               {reviews.length > 0 ? (
                 reviews.map((review) => (
                   <div key={review.id} className="border p-4 rounded-lg shadow-sm">
-                    {/* <p className="text-lg font-semibold">{review.user?.id || "Anonymous"}</p> */}
                     <p className="text-yellow-500 text-lg">{"★".repeat(review.rating)}</p>
                     <p className="text-gray-600">{review.comment}</p>
                   </div>

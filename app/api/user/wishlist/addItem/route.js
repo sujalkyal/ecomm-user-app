@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import prisma from "@repo/db/client";
+import prisma from "../../../../../db/src/index";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../../lib/auth";
 
@@ -11,7 +11,7 @@ export async function POST(req) {
         }
 
         const id = session.user.id;
-        const { productId } = await req.json(); // ✅ Correctly parse JSON body
+        const { productId } = await req.json();
 
         const user = await prisma.user.findUnique({
             where: { id },
@@ -22,7 +22,6 @@ export async function POST(req) {
             return NextResponse.json({ message: "User not found" }, { status: 404 });
         }
 
-        // ✅ If wishlist is an array of product IDs
         const updatedWishlist = await prisma.user.update({
             where: { id },
             data: {
