@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ProductCard from "../../../components/ProductCard.jsx";
+import { Suspense } from "react";
 
 const SearchedPage = () => {
   const searchParams = useSearchParams();
@@ -14,7 +15,9 @@ const SearchedPage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/getAllProducts`);
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/getAllProducts`
+        );
         if (response.status === 200) {
           const filteredProducts = response.data.filter((product) =>
             product.name.toLowerCase().includes(query.toLowerCase())
@@ -28,7 +31,9 @@ const SearchedPage = () => {
 
     const fetchWishlist = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/wishlist/getAllItems`);
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/wishlist/getAllItems`
+        );
         if (response.status === 200 && Array.isArray(response.data)) {
           setWishlist(response.data.map((item) => item.id));
         }
@@ -44,18 +49,25 @@ const SearchedPage = () => {
   }, [query]);
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold">Search Results for "{query}"</h1>
-      {products.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} wishlist={wishlist} setWishlist={setWishlist} />
-          ))}
-        </div>
-      ) : (
-        <p className="text-gray-500 mt-4">No products found.</p>
-      )}
-    </div>
+    <Suspense fallback={<div>Loading search results...</div>}>
+      <div className="p-6">
+        <h1 className="text-2xl font-bold">Search Results for "{query}"</h1>
+        {products.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4">
+            {products.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                wishlist={wishlist}
+                setWishlist={setWishlist}
+              />
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500 mt-4">No products found.</p>
+        )}
+      </div>
+    </Suspense>
   );
 };
 
