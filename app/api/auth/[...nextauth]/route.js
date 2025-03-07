@@ -1,19 +1,21 @@
 import NextAuth from "next-auth";
 import { authOptions } from "../../../lib/auth";
+import { NextResponse } from "next/server";
 
-const handler = async (req, res) => {
-  // Set CORS headers
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader("Access-Control-Allow-Origin", "*"); // Change "*" to a specific origin if needed
-  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT,DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+const handler = async (req) => {
+  const response = NextResponse.next();
+
+  response.headers.set("Access-Control-Allow-Credentials", "true");
+  response.headers.set("Access-Control-Allow-Origin", "*"); // Adjust for security
+  response.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+  response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
   // Handle preflight OPTIONS request
   if (req.method === "OPTIONS") {
-    return res.status(200).end();
+    return new NextResponse(null, { status: 200 });
   }
 
-  return NextAuth(req, res, authOptions);
+  return NextAuth(req, response, authOptions);
 };
 
 export { handler as GET, handler as POST };
