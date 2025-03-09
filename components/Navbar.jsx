@@ -21,14 +21,14 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/api/auth/signin");
+    if (status === "unauthenticated" && pathname !== "/auth/login") {
+      router.push("/auth/signup");
     }
   }, [status, router]);
 
   const handleLogOut = async () => {
     await signOut();
-    router.push("/api/auth/signin");
+    router.push("/auth/login");
   };
 
   const handleNavigation = async (path) => {
@@ -73,7 +73,7 @@ const Navbar = () => {
                 Log Out
               </button>
             ) : (
-              <Link href="/api/auth/signin" className="hover:text-red-500 transition hover:cursor-pointer">
+              <Link href="/auth/signup" className="hover:text-red-500 transition hover:cursor-pointer">
                 Sign Up
               </Link>
             )}

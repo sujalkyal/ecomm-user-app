@@ -102,12 +102,20 @@ export default function LoginPage() {
             Sign in with Google
           </button>
 
-          {/* Forgot Password */}
+          {/* Forgot Password & Sign Up */}
           <div className="flex justify-between mt-2 text-sm">
-            <span></span>
             <a href="/reset-password" className="text-red-500">
               Forgot Password?
             </a>
+            <span>
+              Don't have an account?{" "}
+              <button
+                onClick={() => router.push("/auth/signup")}
+                className="text-blue-500 font-medium hover:cursor-pointer hover:text-blue-600 transition"
+              >
+                Sign up!
+              </button>
+            </span>
           </div>
         </div>
       </div>

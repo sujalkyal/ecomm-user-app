@@ -30,7 +30,7 @@ export default function Header() {
   // Redirect unauthenticated users before rendering UI
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.replace("/api/auth/signin"); // Use replace to prevent back navigation
+      router.replace("/auth/signup"); // Use replace to prevent back navigation
     }
   }, [status, router]);
 

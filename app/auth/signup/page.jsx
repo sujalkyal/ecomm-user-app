@@ -114,7 +114,7 @@ export default function SignupPage() {
           {/* Login Redirect */}
           <p className="text-center mt-4">
             Already have an account?{" "}
-            <a href="/login" className="text-blue-500">Log in</a>
+            <a href="/auth/login" className="text-blue-500 font-medium hover:cursor-pointer hover:text-blue-600 transition">Log in</a>
           </p>
         </div>
       </div>
