@@ -6,9 +6,10 @@ import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
 
 export default function SignupPage() {
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [formData, setFormData] = useState({ name: "", email: "", password: "", confirmPassword: "" });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -17,24 +18,30 @@ export default function SignupPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
     setLoading(true);
 
-    const response = await signIn("credentials", {
-      ...formData,
-      redirect: false,
+    const response = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: formData.name, email: formData.email, password: formData.password }),
     });
 
-    if (response?.ok) {
-      router.push("/");
-    }
-
+    const data = await response.json();
     setLoading(false);
 
-    if (response?.error) {
-      alert("Signup failed: " + response.error);
-    } else {
-      router.push("/login");
+    if (!response.ok) {
+      alert(data.error);
+      return;
     }
+
+    alert("Signup successful! Please log in.");
+    router.push("/auth/login");
   };
 
   return (
@@ -93,6 +100,24 @@ export default function SignupPage() {
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className="w-full p-2 border border-gray-300 rounded pr-10"
+                required
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-3 flex items-center"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
             <button
               type="submit"
               className="w-full bg-red-500 text-white p-2 rounded"
@@ -114,7 +139,9 @@ export default function SignupPage() {
           {/* Login Redirect */}
           <p className="text-center mt-4">
             Already have an account?{" "}
-            <a href="/auth/login" className="text-blue-500 font-medium hover:cursor-pointer hover:text-blue-600 transition">Log in</a>
+            <a href="/auth/login" className="text-blue-500 font-medium hover:cursor-pointer hover:text-blue-600 transition">
+              Log in
+            </a>
           </p>
         </div>
       </div>

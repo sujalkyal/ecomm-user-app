@@ -139,7 +139,7 @@ export default function ProfilePage() {
                     </div>
                     <div>
                       <label className="block font-medium">Address</label>
-                      <input type="text" className="w-full p-2 border rounded" value={userDetails.address} onChange={handleInputChange("address")} />
+                      <input type="text" className="w-full p-2 border rounded" value={userDetails.address || ""} onChange={handleInputChange("address")} />
                     </div>
 
                     <h4 className="text-md font-semibold mt-6">Password Changes</h4>
