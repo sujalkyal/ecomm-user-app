@@ -104,9 +104,6 @@ export default function LoginPage() {
 
           {/* Forgot Password & Sign Up */}
           <div className="flex justify-between mt-2 text-sm">
-            <a href="/reset-password" className="text-red-500">
-              Forgot Password?
-            </a>
             <span>
               Don't have an account?{" "}
               <button
