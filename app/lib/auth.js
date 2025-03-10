@@ -8,7 +8,7 @@ export const authOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email", placeholder: "example@gmail.com", required: true },
+        email: { label: "Email", type: "email", required: true },
         password: { label: "Password", type: "password", required: true },
       },
       async authorize(credentials) {
@@ -29,15 +29,19 @@ export const authOptions = {
           throw new Error("Invalid credentials.");
         }
 
-        return {
-          id: existingUser.id.toString(),
-          email: existingUser.email,
-        };
+        return { id: existingUser.id.toString(), email: existingUser.email };
       },
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      profile(profile) {
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email, // Ensure email is used
+        };
+      },
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET || "secret",
@@ -47,9 +51,48 @@ export const authOptions = {
     newUser: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signup`,
   },
   callbacks: {
-    async session({ token, session }) {
-      session.user.id = token.sub;
+    async signIn({ account, profile }) {
+      if (account.provider === "google") {
+        let existingUser = await db.user.findUnique({
+          where: { email: profile.email },
+        });
+    
+        if (!existingUser) {
+          const [firstName, lastName] = profile.name.split(" ");
+          existingUser = await db.user.create({
+            data: {
+              email: profile.email,
+              firstName,
+              lastName,
+            },
+          });
+        }
+    
+        // Attach the database-generated ID to the profile
+        profile.databaseId = existingUser.id;
+    
+        return true;
+      }
+      return true;
+    }
+    ,
+    async session({ session, token }) {
+      session.user.id = token.id; // Use DB ID
       return session;
-    },
+    },    
+    async jwt({ token, account, user, profile }) {
+      // Ensure JWT stores database ID
+      if (account?.provider === "google") {
+        const existingUser = await db.user.findUnique({
+          where: { email: token.email },
+        });
+    
+        token.id = existingUser?.id || token.sub; // Use DB ID if found
+      } else if (user) {
+        token.id = user.id; // For email-password users, use DB ID
+      }
+
+      return token;
+    },       
   },
 };

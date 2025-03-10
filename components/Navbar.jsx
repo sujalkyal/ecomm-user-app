@@ -1,5 +1,3 @@
-"use client";
-
 import { usePathname, useRouter } from "next/navigation";
 import { FiSearch, FiHeart, FiShoppingCart, FiUser } from "react-icons/fi";
 import Link from "next/link";
@@ -12,6 +10,7 @@ const Navbar = () => {
   const pathname = usePathname();
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [hydrated, setHydrated] = useState(false);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -21,6 +20,7 @@ const Navbar = () => {
   };
 
   useEffect(() => {
+    setHydrated(true);
     if (status === "unauthenticated" && pathname !== "/auth/login") {
       router.push("/auth/signup");
     }
@@ -68,15 +68,17 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
-            {session ? (
-              <button onClick={handleLogOut} className="hover:text-red-500 transition hover:cursor-pointer">
-                Log Out
-              </button>
-            ) : (
-              <Link href="/auth/signup" className="hover:text-red-500 transition hover:cursor-pointer">
-                Sign Up
-              </Link>
-            )}
+            {hydrated ? (
+              session ? (
+                <button onClick={handleLogOut} className="hover:text-red-500 transition hover:cursor-pointer">
+                  Log Out
+                </button>
+              ) : (
+                <Link href="/auth/signup" className="hover:text-red-500 transition hover:cursor-pointer">
+                  Sign Up
+                </Link>
+              )
+            ) : null}
           </li>
         </ul>
 

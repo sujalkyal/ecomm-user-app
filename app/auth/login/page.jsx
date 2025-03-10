@@ -18,24 +18,21 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+  
     const response = await signIn("credentials", {
       ...formData,
       redirect: false,
     });
-
-    if (response?.ok) {
-      router.push("/");
-    }
-
+  
     setLoading(false);
-
-    if (response?.error) {
-      alert("Login failed: " + response.error);
-    } else {
-      router.push("/");
+  
+    if (response?.ok) {
+      router.push("/"); // Successfully logged in, redirect to home
+    } else if (response?.error) {
+      alert("Login failed: " + response.error); // Show error message if login fails
     }
   };
+  
 
   return (
     <div className="flex h-screen">
@@ -95,7 +92,10 @@ export default function LoginPage() {
 
           {/* Sign in with Google */}
           <button
-            onClick={() => signIn("google")}
+            onClick={() => {
+              signIn("google", { callbackUrl: "/" });
+              toast.success("Login successful! Redirecting...");
+            }}
             className="w-full flex items-center justify-center border border-gray-300 p-2 rounded mt-4"
           >
             <Image src="/google_icon.svg" alt="Google" width={20} height={20} className="mr-2" />

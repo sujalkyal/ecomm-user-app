@@ -4,6 +4,8 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({ name: "", email: "", password: "", confirmPassword: "" });
@@ -46,6 +48,7 @@ export default function SignupPage() {
 
   return (
     <div className="flex h-screen">
+      <ToastContainer position="top-center" autoClose={3000} hideProgressBar closeOnClick pauseOnHover />
       {/* Left Side - Image */}
       <div className="w-1/2 bg-gray-100 flex justify-center items-center">
         <Image
@@ -67,7 +70,7 @@ export default function SignupPage() {
             <input
               type="text"
               name="name"
-              placeholder="Name"
+              placeholder="Full Name"
               value={formData.name}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded"
@@ -129,7 +132,10 @@ export default function SignupPage() {
 
           {/* Google Signup */}
           <button
-            onClick={() => signIn("google")}
+            onClick={() => {
+              signIn("google", { callbackUrl: "/" });
+              toast.success("Signup successful! Redirecting...");
+            }}
             className="w-full flex items-center justify-center border border-gray-300 p-2 rounded mt-4"
           >
             <Image src="/google_icon.svg" alt="Google" width={20} height={20} className="mr-2" />

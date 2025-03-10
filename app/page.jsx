@@ -27,10 +27,9 @@ export default function Header() {
   const [allProducts, setAllProducts] = useState([]);
   const [newlyAddedProducts, setNewlyAddedProducts] = useState([]);
 
-  // Redirect unauthenticated users before rendering UI
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.replace("/auth/signup"); // Use replace to prevent back navigation
+      router.replace("/auth/signup");
     }
   }, [status, router]);
 
@@ -46,9 +45,9 @@ export default function Header() {
           axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/wishlist/getAllItems`),
         ]);
 
-        setBestSellingProducts(bestSelling.data.products);
-        setAllProducts(allProducts.data);
-        setNewlyAddedProducts(newlyAdded.data);
+        setBestSellingProducts(bestSelling.data.products || []);
+        setAllProducts(allProducts.data || []);
+        setNewlyAddedProducts(newlyAdded.data || []);
         setWishlist(wishlist.data.map((item) => item.id) || []);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -62,7 +61,6 @@ export default function Header() {
     router.push(`/collection/${encodeURIComponent(categoryUrl)}`);
   };
 
-  // Show loading UI while session is being checked
   if (status === "loading") {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -71,7 +69,6 @@ export default function Header() {
     );
   }
 
-  // Prevent UI rendering if redirecting to login
   if (status === "unauthenticated") return null;
 
   return (
@@ -80,9 +77,9 @@ export default function Header() {
         <aside className="w-1/5 p-4 bg-gray-100 rounded-lg shadow-md">
           <h3 className="text-lg font-semibold mb-4 text-gray-800">Categories</h3>
           <ul className="space-y-3">
-            {Object.entries(categories).map(([displayName, categoryUrl], index) => (
+            {Object.entries(categories).map(([displayName, categoryUrl]) => (
               <li
-                key={index}
+                key={categoryUrl}
                 onClick={() => handleCategoryClick(categoryUrl)}
                 className="text-gray-700 cursor-pointer hover:text-black transition"
               >
@@ -127,7 +124,7 @@ export default function Header() {
             </button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {allProducts.slice(0,5).map((product) => (
+            {allProducts.slice(0, 5).map((product) => (
               <ProductCard key={product.id} product={product} wishlist={wishlist} setWishlist={setWishlist} />
             ))}
           </div>

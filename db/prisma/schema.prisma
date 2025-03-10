@@ -19,7 +19,7 @@ model User {
   firstName String?
   lastName  String?
   address   String?
-  password String
+  password String?
   orders   Orders[]
   cart     Json[]   // {productId: , quantity:}
   reviews  Review[]
