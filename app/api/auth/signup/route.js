@@ -6,10 +6,10 @@ export async function POST(req) {
   try {
     const { name, email, password } = await req.json();
 
-    //split the name into firstName and lastName based on the space
-    const [firstName, lastName] = name.split(" ");
+    const [firstName, ...rest] = name.trim().split(" ");
+    const lastName = rest.join(" ") || null; // allow empty or multiple last names
 
-    if (!firstName || !lastName || !email || !password) {
+    if (!firstName || !email || !password) {
       return NextResponse.json({ error: "All fields are required." }, { status: 400 });
     }
 
