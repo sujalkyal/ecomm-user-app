@@ -22,7 +22,7 @@ export default function SignupPage() {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
+      toast.error("Passwords do not match!");
       return;
     }
 
@@ -38,12 +38,12 @@ export default function SignupPage() {
     setLoading(false);
 
     if (!response.ok) {
-      alert(data.error);
+      toast.error(data.error || "Something went wrong!");
       return;
     }
 
-    alert("Signup successful! Please log in.");
-    router.push("/auth/login");
+    toast.success("Signup successful! Please log in.");
+    setTimeout(() => router.push("/auth/login"), 2000);
   };
 
   return (
@@ -100,7 +100,7 @@ export default function SignupPage() {
                 className="absolute inset-y-0 right-3 flex items-center"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                {showPassword ? <EyeOff size={20} className=" hover:cursor-pointer" /> : <Eye size={20} className=" hover:cursor-pointer" />}
               </button>
             </div>
             <div className="relative">
@@ -118,12 +118,12 @@ export default function SignupPage() {
                 className="absolute inset-y-0 right-3 flex items-center"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
-                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                {showConfirmPassword ? <EyeOff size={20} className=" hover:cursor-pointer" /> : <Eye size={20} className=" hover:cursor-pointer" />}
               </button>
             </div>
             <button
               type="submit"
-              className="w-full bg-red-500 text-white p-2 rounded"
+              className="w-full bg-red-500 text-white p-2 rounded hover:cursor-pointer"
               disabled={loading}
             >
               {loading ? "Creating Account..." : "Create Account"}
@@ -136,7 +136,7 @@ export default function SignupPage() {
               signIn("google", { callbackUrl: "/" });
               toast.success("Signup successful! Redirecting...");
             }}
-            className="w-full flex items-center justify-center border border-gray-300 p-2 rounded mt-4"
+            className="w-full flex items-center justify-center border border-gray-300 p-2 rounded mt-4 hover:cursor-pointer"
           >
             <Image src="/google_icon.svg" alt="Google" width={20} height={20} className="mr-2" />
             Sign up with Google

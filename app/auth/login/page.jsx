@@ -4,6 +4,8 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -27,15 +29,19 @@ export default function LoginPage() {
     setLoading(false);
   
     if (response?.ok) {
-      router.push("/"); // Successfully logged in, redirect to home
+      toast.success("Login successful! Redirecting...");
+      setTimeout(() => {
+        router.push("/");
+      }, 2000);
     } else if (response?.error) {
-      alert("Login failed: " + response.error); // Show error message if login fails
+      toast.error("Login failed: " + response.error);
     }
   };
   
 
   return (
     <div className="flex h-screen">
+      <ToastContainer position="top-center" autoClose={3000} hideProgressBar closeOnClick pauseOnHover />
       {/* Left Side - Image */}
       <div className="w-1/2 bg-gray-100 flex justify-center items-center">
         <Image
@@ -78,7 +84,7 @@ export default function LoginPage() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:cursor-pointer"
               >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                {showPassword ? <EyeOff size={20} className=" hover:cursor-pointer" /> : <Eye size={20} className=" hover:cursor-pointer" />}
               </button>
             </div>
             <button
